@@ -2,7 +2,9 @@ package com.example.permissionhandlingcompose
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -19,13 +21,24 @@ class MainActivity : ComponentActivity() {
             PermissionHandlingComposeTheme {
                 val viewModel = viewModel<MainViewModel>()
                 val dialogQueue = viewModel.visiblePermsissionDialogQueue
+                val cameraPermissionResultLauncher = rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.RequestPermission(),
+                    onResult = { isGranted ->
+                        viewModel.onPermissionResult(
+                            permission = android.Manifest.permission.CAMERA,
+                            isGranted = isGranted
+                        )
+                    }
+                )
 
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Button(onClick = { /*TODO*/ }) {
+                    Button(onClick = {
+                        cameraPermissionResultLauncher.launch(android.Manifest.permission.CAMERA)
+                    }) {
                         Text(text = "Request one permission")
                     }
                     Spacer(modifier = Modifier.height(16.dp))
