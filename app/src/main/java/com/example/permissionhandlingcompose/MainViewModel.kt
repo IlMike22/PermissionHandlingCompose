@@ -9,16 +9,15 @@ class MainViewModel : ViewModel() {
 
     fun dismissDialog(
     ) {
-        visiblePermsissionDialogQueue.removeLast()
+        visiblePermsissionDialogQueue.removeFirst()
     }
 
     fun onPermissionResult(
         permission: String,
         isGranted: Boolean
     ) {
-        if (!isGranted) {
-            visiblePermsissionDialogQueue.add(0, permission)
+        if (!isGranted && !visiblePermsissionDialogQueue.contains(permission)) {
+            visiblePermsissionDialogQueue.add(permission)
         }
-
     }
 }
